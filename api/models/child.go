@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"time"
 
 	u "../utils"
@@ -55,7 +56,12 @@ func GetChildrenByUser(user int) []Child {
 	var children []Child
 
 	database := GetDB()
-	rows, _ := database.Query("SELECT id, user_id, name, age, gender FROM children WHERE user_id = ? AND deleted = 0", user)
+	rows, err := database.Query("SELECT id, user_id, name, age, gender FROM children WHERE user_id = ? AND deleted = 0", user)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	for rows.Next() {
 		var child Child
 		_ = rows.Scan(&child.ID, &child.UserID, &child.Name, &child.Age, &child.Gender)

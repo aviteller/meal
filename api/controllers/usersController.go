@@ -22,6 +22,7 @@ var CreateUser = func(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res := user.Create()
+	fmt.Println(res)
 	u.Respond(w, res)
 }
 
@@ -33,6 +34,18 @@ var Authenticate = func(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res := models.Login(user.Name, user.Password)
+
+	u.Respond(w, res)
+}
+
+var GetUser = func(w http.ResponseWriter, r *http.Request) {
+	user := r.Context().Value("user").(uint)
+
+	data := models.GetUser(int(user))
+
+	res := u.Message(true, "success")
+
+	res["data"] = data
 
 	u.Respond(w, res)
 }

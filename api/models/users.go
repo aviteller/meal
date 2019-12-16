@@ -24,6 +24,7 @@ type User struct {
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
 	Deleted   int    `json:"deleted"`
+	Children  []Child
 }
 
 func (user *User) Validate() (map[string]interface{}, bool) {
@@ -52,13 +53,15 @@ func (user *User) Create() map[string]interface{} {
 		return resp
 	}
 
+	fmt.Println(user)
+
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	user.Password = string(hashedPassword)
 
 	database := GetDB()
-	statement, _ := database.Prepare("INSERT INTO `users` (`name`,`email`,`password`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?)")
+	statement, _ := database.Prepare("INSERT INTO `users` (`name`,`password`,`created_at`,`updated_at`) VALUES (?,?,?,?)")
 	t := time.Now()
-	result, _ := statement.Exec(user.Name, user.Email, user.Password, t.Format("2006-01-02T15:04:05Z07:00"), t.Format("2006-01-02T15:04:05Z07:00"))
+	result, _ := statement.Exec(user.Name, user.Password, t.Format("2006-01-02T15:04:05Z07:00"), t.Format("2006-01-02T15:04:05Z07:00"))
 
 	lastid, _ := result.LastInsertId()
 
@@ -111,14 +114,18 @@ func Login(name, password string) map[string]interface{} {
 	return res
 }
 
-// func GetUser(u uint) *User {
-// 	user := &user{}
-// 	GetDB().Table("accounts").Where("id = ?", u).First(acc)
-// 	if acc.Email == "" {
-// 		return nil
-// 	}
+func GetUser(u int) User {
+	var user User
 
-// 	acc.Password = ""
-// 	return acc
+	database := GetDB()
+	err := database.QueryRow("SELECT id, name FROM users WHERE id = ? AND deleted = 0 LIMIT 0, 1", u).Scan(&user.ID, &user.Name)
 
-// }
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	user.Children = GetChildrenByUser(u)
+
+	return user
+
+}
