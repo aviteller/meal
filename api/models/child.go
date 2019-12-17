@@ -73,3 +73,48 @@ func GetChildrenByUser(user int) []Child {
 	return children
 
 }
+
+func GetChildren() []Child {
+	var children []Child
+	database := GetDB()
+	rows, _ := database.Query("SELECT id, user_id, name, age, gender FROM `children` where deleted = 0")
+
+	for rows.Next() {
+		var child Child
+		_ = rows.Scan(&child.ID, &child.UserID, &child.Name, &child.Age, &child.Gender)
+		children = append(children, child)
+	}
+
+	rows.Close() //good habit to close
+
+	return children
+}
+
+func DeleteChild(id string) map[string]interface{} {
+
+	database := GetDB()
+	stmt, _ := database.Prepare("update `children` SET `deleted` = 1, `updated_at` = ? where id=?")
+	t := time.Now()
+	stmt.Exec(t.Format("2006-01-02T15:04:05Z07:00"), id)
+
+	res2 := u.Message(true, "success")
+
+	return res2
+}
+
+func (child *Child) UpdateChild(id string) map[string]interface{} {
+	if res, ok := child.Validate(); !ok {
+		return res
+	}
+
+	database := GetDB()
+	statement, _ := database.Prepare("UPDATE `children` SET `name`= ?, `age`=? `gender`=? WHERE id =?")
+	result, _ := statement.Exec(child.Name, child.Age, child.Gender, id)
+
+	res := u.Message(true, "success")
+	lastid, _ := result.LastInsertId()
+	child.ID = int(lastid)
+	res["child"] = child
+	return res
+
+}

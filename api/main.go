@@ -22,10 +22,15 @@ func main() {
 	})
 	m.InitTables()
 
+	router.HandleFunc("/api/child", controllers.CreateChild).Methods("POST")
+	router.HandleFunc("/api/child", controllers.GetChildren).Methods("GET")
+	router.HandleFunc("/api/child/{id}", controllers.UpdateChild).Methods("PUT")
+	router.HandleFunc("/api/child/{id}", controllers.DeleteChild).Methods("DELETE")
+
 	router.HandleFunc("/api/user/new", controllers.CreateUser).Methods("POST")
-	router.HandleFunc("/api/child/new", controllers.CreateChild).Methods("POST")
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
-	router.HandleFunc("/api/user/children", controllers.GetChildren).Methods("GET")
+
+	router.HandleFunc("/api/user/children", controllers.GetChildrenByUser).Methods("GET")
 	router.HandleFunc("/api/user", controllers.GetUser).Methods("GET")
 
 	// router.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))

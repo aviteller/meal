@@ -25,14 +25,26 @@
         return res.json();
       })
       .then(res => {
-        children = res.data.Children;
+        if (res.data.Children != null) children = res.data.Children;
+        else children = [];
         loading = false;
       });
   };
 
+  const deleteChild = id => {
+    fetch(`${config.apiUrl}child/${id}`, {
+      method: "DELETE", // 'GET', 'PUT', 'DELETE', etc.
+      headers: {
+        Authorization: `Bearer ${user.token}`
+      }
+    }).then(res => {
+      getUserDetails();
+    });
+  };
+
   const onSubmit = () => {
-    loading = true;
-    fetch(`${config.apiUrl}child/new`, {
+    // loading = true;
+    fetch(`${config.apiUrl}child`, {
       method: "POST", // 'GET', 'PUT', 'DELETE', etc.
       headers: {
         Authorization: `Bearer ${user.token}`
@@ -74,7 +86,10 @@
 
   {#if children.length > 0}
     {#each children as child}
-      <div>{child.name} {child.gender} {child.age}</div>
+      <div>
+        {child.name} {child.gender} {child.age}
+        <button on:click={e => deleteChild(child.id)}>x</button>
+      </div>
     {/each}
   {/if}
 {/if}
