@@ -1,6 +1,24 @@
 <script>
-
+  import Cookies from "../helpers/Cookie";
   import Button from "./Button.svelte";
+  import {push} from 'svelte-spa-router'
+  export let user = {};
+
+  let c = new Cookies();
+
+  const userLoggedIn = () => {
+    let jwt;
+    if ((jwt = c.getCookie("jwt"))) {
+      return true;
+    } else return false;
+  };
+
+  const logout = () => {
+    
+    c.eraseCookie("jwt");
+    window.location.reload()
+    user = {};
+  };
 </script>
 
 <style>
@@ -37,9 +55,13 @@
     <slot />
   </h1> -->
   <div class="links">
-    <Button href="/">Home</Button>
-    <Button href="/login">Login</Button>
-    <Button href="/register">Register</Button>
+    {#if userLoggedIn()}
+      <Button href="/">Home</Button>
+      <Button on:click={logout}>Logout</Button>
+    {:else}
+      <Button href="/login">Login</Button>
+      <Button href="/register">Register</Button>
+    {/if}
 
   </div>
 </header>

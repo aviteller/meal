@@ -1,6 +1,7 @@
 <script>
   import Button from "../../UI/Button.svelte";
   import config from "../../config";
+  import { push } from "svelte-spa-router";
 
   let user = {
     name: "",
@@ -9,12 +10,12 @@
 
   const createUser = async user => {
     let res = await fetch(`${config.apiUrl}user/new`, {
-      mode: 'cors',
+      mode: "cors",
       method: "POST",
-      body: JSON.stringify(user) 
+      body: JSON.stringify(user)
     });
     let data = await res.json();
-    console.log(data)
+    console.log(data);
     return data;
   };
 
@@ -24,10 +25,12 @@
         name: "",
         password: ""
       };
-      console.log(res);
+      push("/login");
     });
   };
 </script>
+
+<h1>Register</h1>
 
 <div>
   <div>

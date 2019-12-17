@@ -1,15 +1,21 @@
 <script>
   import Button from "../../UI/Button.svelte";
   import config from "../../config";
+  import Cookies from "../../helpers/Cookie";
+  import { createEventDispatcher } from "svelte";
+  import { push } from "svelte-spa-router";
+
+  let c = new Cookies();
+  let dispatch = createEventDispatcher();
 
   let user = {
     name: "",
-    password: ""
+    password: "",
+    token: ""
   };
 
   const loginUser = async user => {
     return await fetch(`${config.apiUrl}user/login`, {
-
       method: "POST", // 'GET', 'PUT', 'DELETE', etc.
       body: JSON.stringify(user) // Coordinate the body type with 'Content-Type'
     })
@@ -23,24 +29,31 @@
         if (!data.status) {
           throw new Error(data.message);
         }
-        console.log(data);
         return data;
       });
-    //let data = await res.json();
   };
 
   const onSubmit = () => {
     loginUser(user).then(res => {
       user = {
-        name: "",
-        password: ""
+        id: res.user.id,
+        name: res.user.name,
+        token: res.user.token,
+        loggedIn: true
       };
-      console.log(res);
+      c.setCookie("jwt", JSON.stringify(user), 1);
+      user = {
+        name: "",
+        password: "",
+        token: ""
+      };
+      window.location.reload();
     });
   };
 </script>
 
 <h1>Login</h1>
+
 <div>
   <div>
     <label for="name">Name</label>

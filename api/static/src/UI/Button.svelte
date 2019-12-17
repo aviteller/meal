@@ -4,7 +4,7 @@
   export let href = null;
   export let mode = null;
   export let color = null;
-  import {link} from 'svelte-spa-router'
+  import { link } from "svelte-spa-router";
 </script>
 
 <style>
@@ -63,8 +63,8 @@
 
   .danger:hover,
   .danger:active {
-    background: #cd2a3e ;
-    border-color: #cd2a3e ;
+    background: #cd2a3e;
+    border-color: #cd2a3e;
   }
 
   .outline {
