@@ -2,6 +2,7 @@
   import Button from "../../UI/Button.svelte";
   import config from "../../config";
   import Cookies from "../../helpers/Cookie";
+  import { waitFor } from "../../helpers/misc";
   import { createEventDispatcher } from "svelte";
   import { push } from "svelte-spa-router";
 
@@ -47,6 +48,7 @@
         password: "",
         token: ""
       };
+      waitFor(500);
       window.location.reload();
     });
   };

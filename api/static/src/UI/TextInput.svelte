@@ -60,6 +60,8 @@
     <textarea class:invalid={!valid && touched} {id} rows="{rows}" bind:value on:blur={() => touched = true}/>
   {:else if type==="number"}
     <input class:invalid={!valid && touched} {type} step={float?"0.01":null} {id} {value} on:input on:blur={() => touched = true}/>
+  {:else if type==="date"}
+    <input class:invalid={!valid && touched} {type} {id} {value} on:input on:blur={() => touched = true}/>
   {:else}
     <input class:invalid={!valid && touched} {type} {id} {value} on:input on:blur={() => touched = true}/>
   {/if}

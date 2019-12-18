@@ -8,14 +8,14 @@ import (
 )
 
 type Child struct {
-	ID        int    `json:"id"`
-	UserID    int    `json:"user_id"`
-	Name      string `json:"name"`
-	Age       int    `json:"age"`
-	Gender    string `json:"gender"`
-	CreatedAt string `json:"created_at"`
-	UpdatedAt string `json:"updated_at"`
-	Deleted   int    `json:"deleted"`
+	ID          int    `json:"id"`
+	UserID      int    `json:"user_id"`
+	Name        string `json:"name"`
+	DateOfBirth string `json:"date_of_birth"`
+	Gender      string `json:"gender"`
+	// CreatedAt   string `json:"created_at"`
+	// UpdatedAt   string `json:"updated_at"`
+	// Deleted     int    `json:"deleted"`
 }
 
 type Children struct {
@@ -40,9 +40,9 @@ func (child *Child) Create() map[string]interface{} {
 	}
 
 	database := GetDB()
-	statement, _ := database.Prepare("INSERT INTO `children` (`user_id`,`name`,`age`,`gender`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?)")
+	statement, _ := database.Prepare("INSERT INTO `children` (`user_id`,`name`,`date_of_birth`,`gender`,`created_at`,`updated_at`) VALUES (?,?,?,?,?,?)")
 	t := time.Now()
-	result, _ := statement.Exec(child.UserID, child.Name, child.Age, child.Gender, t.Format("2006-01-02T15:04:05Z07:00"), t.Format("2006-01-02T15:04:05Z07:00"))
+	result, _ := statement.Exec(child.UserID, child.Name, child.DateOfBirth, child.Gender, t.Format("2006-01-02T15:04:05Z07:00"), t.Format("2006-01-02T15:04:05Z07:00"))
 	lastid, _ := result.LastInsertId()
 
 	child.ID = int(lastid)
@@ -56,7 +56,7 @@ func GetChildrenByUser(user int) []Child {
 	var children []Child
 
 	database := GetDB()
-	rows, err := database.Query("SELECT id, user_id, name, age, gender FROM children WHERE user_id = ? AND deleted = 0", user)
+	rows, err := database.Query("SELECT id, user_id, name, date_of_birth, gender FROM children WHERE user_id = ? AND deleted = 0", user)
 
 	if err != nil {
 		fmt.Println(err)
@@ -64,7 +64,7 @@ func GetChildrenByUser(user int) []Child {
 
 	for rows.Next() {
 		var child Child
-		_ = rows.Scan(&child.ID, &child.UserID, &child.Name, &child.Age, &child.Gender)
+		_ = rows.Scan(&child.ID, &child.UserID, &child.Name, &child.DateOfBirth, &child.Gender)
 		children = append(children, child)
 	}
 
@@ -77,11 +77,11 @@ func GetChildrenByUser(user int) []Child {
 func GetChildren() []Child {
 	var children []Child
 	database := GetDB()
-	rows, _ := database.Query("SELECT id, user_id, name, age, gender FROM `children` where deleted = 0")
+	rows, _ := database.Query("SELECT id, user_id, name, date_of_birth, gender FROM `children` where deleted = 0")
 
 	for rows.Next() {
 		var child Child
-		_ = rows.Scan(&child.ID, &child.UserID, &child.Name, &child.Age, &child.Gender)
+		_ = rows.Scan(&child.ID, &child.UserID, &child.Name, &child.DateOfBirth, &child.Gender)
 		children = append(children, child)
 	}
 
@@ -108,8 +108,9 @@ func (child *Child) UpdateChild(id string) map[string]interface{} {
 	}
 
 	database := GetDB()
-	statement, _ := database.Prepare("UPDATE `children` SET `name`= ?, `age`=? `gender`=? WHERE id =?")
-	result, _ := statement.Exec(child.Name, child.Age, child.Gender, id)
+	statement, _ := database.Prepare("UPDATE `children` SET `name`= ?, `date_of_birth`=?, `gender`=?, `updated_at` = ? WHERE id =?")
+	t := time.Now()
+	result, _ := statement.Exec(child.Name, child.DateOfBirth, child.Gender, t.Format("2006-01-02T15:04:05Z07:00"), id)
 
 	res := u.Message(true, "success")
 	lastid, _ := result.LastInsertId()

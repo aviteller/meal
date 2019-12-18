@@ -59,14 +59,14 @@ var UpdateChild = func(w http.ResponseWriter, r *http.Request) {
 
 	id := params["id"]
 
-	note := &models.Child{}
+	child := &models.Child{}
 
-	err2 := json.NewDecoder(r.Body).Decode(note)
+	err2 := json.NewDecoder(r.Body).Decode(child)
 	if err2 != nil {
 		u.Respond(w, u.Message(false, "error where decoding req"))
 	}
 
-	res := note.UpdateChild(id)
+	res := child.UpdateChild(id)
 	res["data"] = id
 	u.Respond(w, res)
 }
