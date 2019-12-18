@@ -1,13 +1,13 @@
 <script>
   import config from "../config";
   import EditIngredient from "./components/EditIngredient.svelte";
+  import Table from "../UI/Table.svelte";
   import { loadUser } from "../helpers/user";
   export let params = {};
 
   let loading = true;
   let editMode = null;
   let user = loadUser();
-
   let meal = {};
   let ingredients = [];
 
@@ -21,15 +21,11 @@
       .then(res => res.json())
       .then(res => {
         meal = res.data;
-        // console.log(meal);
-        // delete meal.Ingredients;
-        // if (res.data.Ingredients != null) ingredients = res.data.Ingredients;
-        // else ingredients = [];
         loading = false;
       });
   };
 
-  const removeIngredient = (id) => {
+  const removeIngredient = id => {
     fetch(`${config.apiUrl}ingredient/${id}`, {
       method: "DELETE", // 'GET', 'PUT', 'DELETE', etc.
       headers: {
@@ -44,6 +40,7 @@
     editMode = null;
     getMealDetails();
   };
+  
   const cancelEdit = () => (editMode = null);
   const startEdit = () => (editMode = "edit");
 
@@ -57,12 +54,7 @@
     <p>Type : {meal.meal_type}</p>
     <p>Date : {meal.meal_date}</p>
     {#if meal.Ingredients && meal.Ingredients.length > 0}
-      <table>
-        <tr>
-          <th>Ingredient</th>
-          <th>Calories</th>
-          <th />
-        </tr>
+      <Table title="Ingredients" headers={['Ingredient', 'Calories', '']} width="50">
         {#each meal.Ingredients as ingredient}
           <tr>
             <td>{ingredient.name}</td>
@@ -74,7 +66,7 @@
             </td>
           </tr>
         {/each}
-      </table>
+      </Table>
     {/if}
   {:else}
     <EditIngredient

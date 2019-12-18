@@ -98,12 +98,12 @@
 </style>
 
 {#if href}
-  <a {href} use:link>
+  <a {href} use:link >
     <slot />
   </a>
 {:else}
 
-  <button class="{mode} {color}" {type} on:click {disabled}>
+  <button class="{mode}  {color}" {type} on:click {disabled}>
     <slot />
   </button>
 {/if}

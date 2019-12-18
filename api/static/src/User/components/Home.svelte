@@ -1,6 +1,7 @@
 <script>
   import { loadUser } from "../../helpers/user";
   import Button from "../../UI/Button.svelte";
+  import Table from "../../UI/Table.svelte";
   import EditMeal from "../../Meal/components/EditMeal.svelte";
   import config from "../../config";
   import { calculateAge } from "../../helpers/misc";
@@ -128,48 +129,40 @@
     <div class="user_stuff">
       <div>
         {#if children.length > 0}
-          <table>
-            <tr>
-              <th>Name</th>
-              <th>Gender</th>
-              <th>Age</th>
-              <th />
-            </tr>
-          </table>
-          {#each children as child}
-            <tr>
-              <td>{child.name}</td>
-              <td>{child.gender}</td>
-              <td>{calculateAge(child.date_of_birth)}</td>
-              <td>
-                <button on:click={e => deleteChild(child.id)}>x</button>
-              </td>
-            </tr>
-          {/each}
+          <Table title="Children" headers={['Name', 'Gender', 'Age', '']}>
+
+            {#each children as child}
+              <tr>
+                <td>{child.name}</td>
+                <td>{child.gender}</td>
+                <td>{calculateAge(child.date_of_birth)}</td>
+                <td>
+                  <button on:click={e => deleteChild(child.id)}>x</button>
+                </td>
+              </tr>
+            {/each}
+          </Table>
         {/if}
       </div>
       <div>
         {#if meals.length > 0}
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Date</th>
-            <th />
-          </tr>
-          {#each meals as meal}
-            <tr>
-              <td>{meal.name}</td>
-              <td>{meal.meal_type}</td>
-              <td>{meal.meal_date}</td>
-              <td>
-                <Button color="danger" on:click={e => deleteMeal(meal.id)}>
-                  X
-                </Button>
-                <Button href={`/meal/${meal.id}`}>Meal</Button>
-              </td>
+          <Table title="Meals" headers={['Name', 'Type', 'Date', '']}>
 
-            </tr>
-          {/each}
+            {#each meals as meal}
+              <tr>
+                <td>{meal.name}</td>
+                <td>{meal.meal_type}</td>
+                <td>{meal.meal_date}</td>
+                <td>
+                  <Button color="danger" on:click={e => deleteMeal(meal.id)}>
+                    X
+                  </Button>
+                  <Button href={`/meal/${meal.id}`}>Meal</Button>
+                </td>
+
+              </tr>
+            {/each}
+          </Table>
         {/if}
       </div>
     </div>

@@ -22,14 +22,14 @@
 </script>
 
 <style>
-  /* header {
+  header {
     position: fixed;
     width: 100%;
     top: 0;
     left: 0;
     height: 4rem;
     background-color: white;
-    border-bottom: 12px solid #199b14;
+    border-bottom: 12px solid black;
     display: flex;
     justify-content: space-between;
     align-content: center;
@@ -47,7 +47,7 @@
   .links {
     margin-top: 1rem;
     margin-right: 2rem;
-  } */
+  }
 </style>
 
 <header>
